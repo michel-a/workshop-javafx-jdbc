@@ -1,6 +1,5 @@
 package model.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import model.dao.DaoFactory;
