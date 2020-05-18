@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DBException;
+import gui.listeners.DataChangeListener;
 import gui.utils.Alerts;
 import gui.utils.Constraints;
 import gui.utils.Utils;
@@ -22,6 +25,8 @@ public class DepartmentFormController implements Initializable {
 	private Department entity;
 	
 	private DepartmentService service;
+	
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	@FXML
 	private TextField txtId;
@@ -46,6 +51,10 @@ public class DepartmentFormController implements Initializable {
 		this.service = service;
 	}
 	
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+	}
+	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
 		if(entity == null) {
@@ -57,12 +66,19 @@ public class DepartmentFormController implements Initializable {
 		try { // Como é uma operação com acesso a BD, é preciso colocar em um try-catch
 			entity = getFormData();
 			service.saveOrUpdate(entity);
+			notifyDataChangeListener();
 			Utils.currentStage(event).close(); // Para fechar a janela após salvar no banco.
 		} catch(DBException e) {
 			Alerts.showAlert("Error saving object.", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
+	private void notifyDataChangeListener() {
+		for(DataChangeListener listener : dataChangeListeners) {
+			listener.onDataChanged();
+		}
+	}
+
 	private Department getFormData() {
 		Department obj = new Department();
 		
