@@ -98,6 +98,7 @@ public class DepartmentListController implements Initializable {
 			
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
+			controller.setDeparmentService(new DepartmentService()); // Aula 277, como não está sendo usado nenhum framework, é preciso ijetar manualmente
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
