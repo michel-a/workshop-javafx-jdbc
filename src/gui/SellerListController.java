@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -47,6 +48,15 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private TableColumn<Seller, Seller> tableColumnRemove;
 	
 	@FXML
+	private TableColumn<Seller, Seller> tableColumnEmail;
+	
+	@FXML
+	private TableColumn<Seller, Date> tableColumnBirthDate;
+	
+	@FXML
+	private TableColumn<Seller, Double> tableColumnBaseSalary;
+	
+	@FXML
 	private Button btNew;
 	
 	private ObservableList<Seller> obsList;
@@ -72,6 +82,11 @@ public class SellerListController implements Initializable, DataChangeListener {
 		// Padrão do javafx para iniciar o comportamento das colunas
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy");
+		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
 		
 		// getWindow() = pega a referência da janela, window é uma superclasse de stage e por isso é necessário fazer o downcasting 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
@@ -79,16 +94,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 		tableViewSeller.prefHeightProperty().bind(stage.heightProperty());
 	}
 	
-	// Esse método será responsável por acessar o serviço, carregar os
-	// departamentos e jogar os departamentos na ObservableList
-	// O ObservableList será associado ao TableView e os departamentos
-	// vão aparecer na tela
 	public void updateTableView() {
-		// a injeção de dependencia setSellerService está totalmente manual
-		// então se o programardor esquecer de injetar a dependência, não vai
-		// ter como usar o serviço aqui no método, e or isso o if é para proteger
-		// algum erro que o programador fizer, para de propósito, estourar uma
-		// execeção e o mesmo ver que ele esqueceu.
 		if(service == null) {
 			throw new IllegalStateException("Service was null.");
 		}
