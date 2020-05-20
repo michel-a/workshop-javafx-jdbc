@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.service.DepartmentService;
 import model.service.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -118,7 +119,8 @@ public class SellerListController implements Initializable, DataChangeListener {
 			
 			SellerFormController controller = loader.getController();
 			controller.setSeller(obj);
-			controller.setDeparmentService(new SellerService()); // Aula 277, como não está sendo usado nenhum framework, é preciso ijetar manualmente
+			controller.setServices(new SellerService(), new DepartmentService()); // Aula 277, como não está sendo usado nenhum framework, é preciso ijetar manualmente
+			controller.loadAssociatedObjects();
 			controller.subscribeDataChangeListener(this); // Aula 278
 			controller.updateFormData();
 			
@@ -130,6 +132,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 			dialogStage.initModality(Modality.WINDOW_MODAL); // esse método que diz que a janela será modal, deixando-a travada
 			dialogStage.showAndWait();
 		} catch(IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
